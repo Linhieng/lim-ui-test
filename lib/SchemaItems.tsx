@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue'
 import { FieldPropsDefine, SchemaTypesEnum } from './types'
-import StringField from './fields/StringField'
-import NumberField from './fields/NumberField'
+import StringField from './fields/StringField.vue'
+import NumberField from './fields/NumberField.vue'
 
 // 该组件的工作就是将不同类型的 schema， 交给不同的组件去完成
 export default defineComponent({
