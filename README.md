@@ -37,4 +37,4 @@
 
     解决方案就是使用 `HelloWorld.tsx` ，因为 `tsx` 原生支持类型推断。
 
-3. 使用 tsx 时，是 `return () => (<div> <div>)` 而不是 `return (<div> <div>`
+3. tsx 文件中 setup 返回的值是一个渲染函数，setup 函数本身只会被执行一次，但渲染会经常被执行。渲染函数的返回值本质上是 `createVNOde` 函数，但通过 `@vue/babel-plugin-jsx` 可以直接像 jsx 那样直接写 DOM 对象。如果是通过 vite 构建的 vue 项目，则内置了该功能，不需要安装 `@vue/babel-plugin-jsx`。
