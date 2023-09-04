@@ -1,10 +1,9 @@
 const { defineConfig } = require('@vue/cli-service')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
 module.exports = defineConfig({
     transpileDependencies: true,
-    // 阻止 webpack 的报错信息直接显示在页面上
-    devServer: {
-        client: {
-            overlay: false,
-        },
+    chainWebpack(config) {
+        config.plugin('monaco').use(new MonacoWebpackPlugin())
     },
 })

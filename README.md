@@ -1,6 +1,6 @@
 # vue + ts 打造组件库
 
-[原课程所在网站 - 慕课网](https://coding.imooc.com/class/chapter/466.html#Anchor)
+[课程所在网站 - 慕课网](https://coding.imooc.com/class/chapter/466.html#Anchor)
 
 ## 笔记
 
@@ -38,3 +38,24 @@
     解决方案就是使用 `HelloWorld.tsx` ，因为 `tsx` 原生支持类型推断。
 
 3. tsx 文件中 setup 返回的值是一个渲染函数，setup 函数本身只会被执行一次，但渲染会经常被执行。渲染函数的返回值本质上是 `createVNOde` 函数，但通过 `@vue/babel-plugin-jsx` 可以直接像 jsx 那样直接写 DOM 对象。如果是通过 vite 构建的 vue 项目，则内置了该功能，不需要安装 `@vue/babel-plugin-jsx`。
+
+4. 解决控制台 Uncaught Error: Unexpected usage. at EditorSimpleWorker.loadForeignModule 报错。
+
+    当使用 webpack 和 monaco-editor 时，需要搭配 monaco-editor 的 webpack 插件。没有使用该插件时就会提示上方的报错信息。所以解决方案就是使用该插件。
+
+    先安装 `npm i monaco-editor-webpack-plugin -D`，然后在 `vue.config.js` 添加 monaco 的 webpack 插件配置。文件如下：
+
+    ```js
+    const { defineConfig } = require('@vue/cli-service')
+    const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
+    module.exports = defineConfig({
+        chainWebpack(config) {
+            config.plugin('monaco').use(new MonacoWebpackPlugin())
+        },
+    })
+    ```
+
+## 疑惑
+
+1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？

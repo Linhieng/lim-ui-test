@@ -1,4 +1,4 @@
-import simple from './simple'
-import example2 from './example2'
+import numberFieldDemo from './numberFieldDemo'
+import stringFieldDemo from './stringFieldDemo'
 
-export default [simple, example2]
+export default [stringFieldDemo, numberFieldDemo]

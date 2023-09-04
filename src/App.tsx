@@ -7,8 +7,8 @@ import SchemaForm from '../lib'
 import demos from './demo'
 
 // TODO: 在 lib 中导入 Schema 和 UISchema 的类型声明，而不是在这里写死
-type SchemaType = unknown
-type UISchemaType = unknown
+type SchemaType = any
+type UISchemaType = any
 type DemoType = {
     schema: SchemaType | null
     uiSchema: UISchemaType | null
@@ -91,18 +91,22 @@ export default defineComponent({
         })
 
         function factoryHandleCodeChange(
-            filed: 'schema' | 'data' | 'uiSchema',
+            field: 'schema' | 'data' | 'uiSchema',
             value: string
         ) {
             try {
                 const json = JSON.parse(value)
-                demo[filed] = json
-                demo[`${filed}Code`] = value
+                demo[field] = json
+                demo[`${field}Code`] = value
             } catch (err) {
                 // do someting
             }
         }
 
+        const handleChange = (v: any) => {
+            demo.data = v
+            demo.dataCode = toJson(v)
+        }
         const handleSchemaChange = (v: string) =>
             factoryHandleCodeChange('schema', v)
         const handleDataChange = (v: string) =>
@@ -180,7 +184,11 @@ export default defineComponent({
                     <main class={classes.content}>
                         {renderCodeEditor()}
                         <div class={classes.form}>
-                            <SchemaForm />
+                            <SchemaForm
+                                schema={demo.schema}
+                                value={demo.data}
+                                onChange={handleChange}
+                            />
                         </div>
                     </main>
                 </div>
