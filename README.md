@@ -37,7 +37,11 @@
 
     解决方案就是使用 `HelloWorld.tsx` ，因为 `tsx` 原生支持类型推断。
 
-3. tsx 文件中 setup 返回的值是一个渲染函数，setup 函数本身只会被执行一次，但渲染会经常被执行。渲染函数的返回值本质上是 `createVNOde` 函数，但通过 `@vue/babel-plugin-jsx` 可以直接像 jsx 那样直接写 DOM 对象。如果是通过 vite 构建的 vue 项目，则内置了该功能，不需要安装 `@vue/babel-plugin-jsx`。
+3. setup 函数只执行一次，但其返回的函数会多次调用。
+
+    setup 函数可以返回一个对象，也可以返回一个函数。在 vue sfc 中 setup 不会专门返回一个函数，我们一般在 tsx 的 setup 中返回一个函数。该函数会多次调用，而 setup 函数本身只会调用一次。
+
+    setup 返回的函数可以认为是一个渲染函数，渲染函数的返回值本质上应该是 `h` 或者 `createVNode` 函数的返回值。但我们一般不会通过 `h` 来创建节点，而是借助一些插件，比如 `@vue/babel-plugin-jsx`，该插件能够让我们像写 jsx 那样直接写 DOM 对象。（注意，对于 vue-cli 需要专门安装 `@vue/babel-plugin-jsx`，但对于 vite 在不需要）
 
 4. 解决控制台 Uncaught Error: Unexpected usage. at EditorSimpleWorker.loadForeignModule 报错。
 
