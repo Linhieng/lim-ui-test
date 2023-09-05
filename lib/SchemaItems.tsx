@@ -1,6 +1,7 @@
 import { computed, defineComponent } from 'vue'
 import { FieldPropsDefine, SchemaTypesEnum } from './types'
 import ObjectField from './fields/ObjectField'
+import ArrayField from './fields/ArrayField'
 import StringField from './fields/StringField.vue'
 import NumberField from './fields/NumberField.vue'
 
@@ -37,6 +38,10 @@ export default defineComponent({
                 }
                 case SchemaTypesEnum.OBJECT: {
                     Component = ObjectField
+                    break
+                }
+                case SchemaTypesEnum.ARRAY: {
+                    Component = ArrayField
                     break
                 }
                 default: {

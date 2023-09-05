@@ -41,7 +41,7 @@ export default defineComponent({
                     schema={properties[k]}
                     rootSchema={rootSchema}
                     value={currentValue[k]}
-                    key={index} // TODO: 这个 key 是为了让 vue 区分不同组件的，那么直接使用 Symbol() 是否有副作用呢？
+                    key={index} // 📚 如果这里写成 Symbol()，则用户每输入一个字符，输入框将会失去焦点
                     onChange={(v: any) => {
                         handleObjectFieldChange(k, v)
                     }}
