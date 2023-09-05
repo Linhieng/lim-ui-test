@@ -1,18 +1,14 @@
 import { isObject } from '../utils'
-import { SCHEMA_FORM_CONTEXT_KEY } from '../context'
+import { useSchemaFormContext } from '../context'
 import { FieldPropsDefine } from '../types'
-import { defineComponent, inject } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ObjectField',
     props: FieldPropsDefine,
     setup(props) {
-        const context = inject(SCHEMA_FORM_CONTEXT_KEY)
-
-        // 📚 用户可能直接调用该组件，此时 context 将会是 undefined
-        if (!context) {
-            throw Error('Component SchemaForm must be used')
-        }
+        // 📚 这就是组合式 API 的好处，可以很方便的将抽离出一些代码，同时包保留类型提示等功能。此处 useSchemaFormContext() 的效果，等同于将 useSchemaFormContext 中的内容直接写在这里面。
+        const context = useSchemaFormContext()
 
         const handleObjectFieldChange = (key: string, val: any) => {
             // 📚 这是 Object 组件，所以该组件的值是一个 Object。而该函数的 key,val 就是 value 中的某一键值对
