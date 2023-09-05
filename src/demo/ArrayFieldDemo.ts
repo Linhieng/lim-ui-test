@@ -28,6 +28,13 @@ export default {
                     },
                 },
             },
+            {
+                type: 'array',
+                items: {
+                    type: 'string',
+                    enum: ['red', 'green', 'blue'],
+                },
+            },
         ],
     },
     uiSchema: {},

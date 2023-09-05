@@ -2,9 +2,10 @@ import { createUseStyles } from 'vue-jss'
 import { useSchemaFormContext } from '../context'
 import { FieldPropsDefine, Schema } from '../types'
 import { PropType, defineComponent } from 'vue'
+import SelectionWidget from '../widgets/SelectionWidget'
 
 /*
-该组件支持下面三种类型
+该组件支持下面三种类型。
 1. 多类型数组
     {
         items: [
@@ -12,11 +13,11 @@ import { PropType, defineComponent } from 'vue'
             { type: number },
         ],
     }
-2. 单类型数据
+2. 单类型数据 TODO: 提供的删除操作，是否要删除 Schema？不删除 Schema 中的内容，空的数据由不会渲染任何东西，这样的逻辑很奇怪。
     {
         items: { type: string },
     }
-3. 单类型数组，并且支持枚举值
+3. 多选表单组件。TODO: 这个 Schema 类型设计的让人很疑惑，之前我居然一直以为 enum 是用来限制值的类型的，谁能想到居然是多选框。但现在暂时还是先跟着视频走。
     {
         items: {
             type: string,
@@ -165,6 +166,7 @@ export default defineComponent({
 
             const isMultiType = Array.isArray(schema.items)
             const isSingleType = schema.items && !(schema.items as any).enum
+            const isSelectType = schema.items && (schema.items as any).enum
 
             if (isMultiType) {
                 const items = schema.items as Schema[]
@@ -202,9 +204,21 @@ export default defineComponent({
                         </ArrayItemWrapper>
                     )
                 })
+            } else if (isSelectType) {
+                const enumOptions = (schema.items as any).enum
+                const options = enumOptions.map((val: string) => ({
+                    value: val,
+                    info: val,
+                }))
+                return (
+                    <SelectionWidget
+                        options={options}
+                        onChange={props.onChange}
+                    />
+                )
             }
-
-            return <div>This is Array Field</div>
+            // TODO: 能进入到 field 组件中的 Schema 类型是否通过校验类型校验（Ajx）
+            return <div></div>
         }
     },
 })
