@@ -58,6 +58,10 @@ export const FieldPropsDefine = {
         type: Object as PropType<Schema>,
         required: true,
     },
+    rootSchema: {
+        type: Object as PropType<Schema>,
+        // required: true,
+    },
     value: {
         // 没有写 type，表示任意值
         required: true,

@@ -65,6 +65,25 @@
     tsx 中的组件类型能够自动导出，比如 props 中哪些是必选的，类型是什么，这些都可以在编写代码时直接获取提示。
     但 sfc 中，虽然在编写 sfc 时能获得一些代码提示，但是组件的类型依旧无法自动导出，需要单独声明。
 
+6. 检测组件循环依赖
+
+    SchemaItems 组件会用到 ObjectField 组件，而 ObjectField 组件又会用到 SchemaItems 组件，如果在两个文件中互相导入，在这小项目中是没问题的，但如果一直这样做，当项目变大时可能会出现奇怪的一些现象（暂时不清楚是什么），到时候将会让你一脸懵。为此，不推荐循环依赖。
+
+    为了检测是否循环依赖，可以安装 `npm i circular-dependency-plugin -D`。然后在 vue.config.js 中使用该 webpack 插件。如下：
+
+    ```js
+    const { defineConfig } = require('@vue/cli-service')
+    const CircularDependencyPlugin = require('circular-dependency-plugin')
+
+    module.exports = defineConfig({
+        chainWebpack(config) {
+            config
+                .plugin('circular')
+                .use(new CircularDependencyPlugin({ exclude: /node_modules/ }))
+        },
+    })
+    ```
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。
