@@ -24,7 +24,7 @@ export default defineComponent({
             const retrievedSchema = retrievedSchemaRef.value
 
             // TODO: 如果 type 没有指定，我们需要猜测这个 type
-            const schemaType = schema.type
+            const schemaType = schema.type?.toLowerCase()
             let Component: any
 
             switch (schemaType) {
