@@ -1,7 +1,8 @@
-import { defineComponent } from 'vue'
+import { defineComponent, provide } from 'vue'
 
 import { FieldPropsDefine } from './types'
 import SchemaItems from './SchemaItems'
+import { SCHEMA_FORM_CONTEXT_KEY } from './context'
 
 // 📚 SchemaForm 是入口。对于用户来时，它只负责传入一个 Schema，而我们（lib）要做的事情就是将这个 Schema 转换成对应的组件进行渲染。
 export default defineComponent({
@@ -12,6 +13,11 @@ export default defineComponent({
         const handleChange = (v: any) => {
             props.onChange(v)
         }
+
+        // 📚 SchemaItems 是不变的，不需要响应性
+        provide(SCHEMA_FORM_CONTEXT_KEY, {
+            SchemaItems,
+        })
 
         return () => {
             const { schema, value } = props

@@ -65,11 +65,11 @@
     tsx 中的组件类型能够自动导出，比如 props 中哪些是必选的，类型是什么，这些都可以在编写代码时直接获取提示。
     但 sfc 中，虽然在编写 sfc 时能获得一些代码提示，但是组件的类型依旧无法自动导出，需要单独声明。
 
-6. 检测组件循环依赖
+6. 检测组件循环引用
 
-    SchemaItems 组件会用到 ObjectField 组件，而 ObjectField 组件又会用到 SchemaItems 组件，如果在两个文件中互相导入，在这小项目中是没问题的，但如果一直这样做，当项目变大时可能会出现奇怪的一些现象（暂时不清楚是什么），到时候将会让你一脸懵。为此，不推荐循环依赖。
+    SchemaItems 组件会用到 ObjectField 组件，而 ObjectField 组件又会用到 SchemaItems 组件，如果在两个文件中互相导入，在这小项目中是没问题的，但如果一直这样做，当项目变大时可能会出现奇怪的一些现象（暂时不清楚是什么），到时候将会让你一脸懵。为此，不推荐循环引用。
 
-    为了检测是否循环依赖，可以安装 `npm i circular-dependency-plugin -D`。然后在 vue.config.js 中使用该 webpack 插件。如下：
+    为了检测是否循环引用，可以安装 `npm i circular-dependency-plugin -D`。然后在 vue.config.js 中使用该 webpack 插件。如下：
 
     ```js
     const { defineConfig } = require('@vue/cli-service')
@@ -83,6 +83,58 @@
         },
     })
     ```
+
+7. 通过 vue 的 provide 和 inject 替代组件循环引用
+
+    props 是用于像子节点传递数据的，但如果想要给子孙传递数据时，则可以使用[依赖注入](https://vuejs.org/guide/components/provide-inject.html)，即使用 provide 和 inject。
+
+    provide 需要提供一个 key, 这个 key 是全局唯一的，这个时候就可以利用 Symbol 来创建一个唯一的值了。需要注意的是 Sombol() 的值是唯一的，但变量名可不是唯一的。但变量名有作用域，所以只要代码符合规范我们就不用担心。而且变量名重名时会报错，但 key 重复时会直接覆盖。这就是 Symbol 的好处了。
+
+    注意，provide 不会自动对传递的数据进行处理，这是为了 inject 获取数据时，该数据依旧是响应式的（reactive 或 ref）。
+    不过，因为我们这里传递的是一个组件，而我们的组件基本不会变化，所以可以直接传递，而不需要封装在 reactive 中。
+
+8. provide 源码
+
+    provide 源码在 [packages/runtime-core/src/apiInject.ts](https://github1s.com/vuejs/core/blob/HEAD/packages/runtime-core/src/apiInject.ts#L9-L10) 中。
+
+    源码核心逻辑非常简单，就是将新的数据添加到 provides 中。
+
+    ```ts
+    export function provide<T, K = InjectionKey<T> | string | number>(
+        key: K,
+        value: K extends InjectionKey<infer V> ? V : T
+    ) {
+        // currentInstance 指的就是当前渲染的组件，也就是当前执行的 setup 的组件
+
+        if (!currentInstance) { // 判断当前是否处于组件的渲染流程当中。setup 执行的过程就是“渲染流程”
+            if (__DEV__) { // 如果是开发者模式，则提示 provide 只能被用在 setup 中
+                warn(`provide() can only be used inside setup().`)
+            }
+        } else {
+            // 获取当前组件的 provides
+            let provides = currentInstance.provides
+            // 获取父组件的 provides
+            const parentProvides =
+                currentInstance.parent && currentInstance.parent.provides
+            // 如果当前组件没有添加新的数据（没有调用 provide），则当前组件的 provides 将会等于父组件的 provides
+            if (parentProvides === provides) {
+                // 克隆出一个新的 provides，是为了不污染父组件的 provides。
+                // 因为父组件的 provides 会传递给多个孩子，当前组件只是其中一个孩子。
+                provides = currentInstance.provides = Object.create(parentProvides)
+            }
+            // 添加新的数据
+            provides[key as string] = value
+        }
+    }
+    ```
+
+9. [为 provide 内容提供类型定义](https://cn.vuejs.org/guide/typescript/composition-api.html#typing-provide-inject)。
+
+    注意是在声明 key 的时候提供类型定义。
+
+    此外，虽然提供了 provides 的定义，但 inject 的时候值依旧可能为 undefined。因为调用 inject 的时候，不一定执行了 provides。比如 SchemaForm 中调用了 provide，ObjectField 中调用了 inject。一般情况下，只会调用 SchemaForm 组件，此时 inject 获取的内容就不会是 undefined，但不排除某些情况下，用户直接调用了 ObjectField 组件，这个时候 inject 就会是 undefined 了。
+
+    上面这句话其实其实不用写的，因为使用 ts 开始时，会自动提示会有 undefined。这也是 ts 开发带来的好处，让你知道获取 inject 中的内容时需要先判断一下。
 
 ## 疑惑
 

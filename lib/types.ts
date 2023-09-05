@@ -25,7 +25,7 @@ export interface Schema {
     default?: any
 
     properties?: {
-        [key: string]: Schema | { $ref: string }
+        [key: string]: Schema /* Schema 本身就包含了 { $ref: string } */
     }
     items?: Schema | Schema[] | SchemaRef
     uniqueItems?: any
