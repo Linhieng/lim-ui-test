@@ -18,7 +18,7 @@ export default defineComponent({
                 : {}
 
             if (val === undefined) {
-                delete value[val]
+                delete value[key] // fix 删除的是 key，不是 val
             } else {
                 value[key] = val
             }
