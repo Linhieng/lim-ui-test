@@ -65,6 +65,8 @@
     tsx 中的组件类型能够自动导出，比如 props 中哪些是必选的，类型是什么，这些都可以在编写代码时直接获取提示。
     但 sfc 中，虽然在编写 sfc 时能获得一些代码提示，但是组件的类型依旧无法自动导出，需要单独声明。
 
+    jsx/tsx 社区的支持比 vue 完善。
+
 6. 检测组件循环引用
 
     SchemaItems 组件会用到 ObjectField 组件，而 ObjectField 组件又会用到 SchemaItems 组件，如果在两个文件中互相导入，在这小项目中是没问题的，但如果一直这样做，当项目变大时可能会出现奇怪的一些现象（暂时不清楚是什么），到时候将会让你一脸懵。为此，不推荐循环引用。
@@ -136,11 +138,94 @@
 
     上面这句话其实其实不用写的，因为使用 ts 开始时，会自动提示会有 undefined。这也是 ts 开发带来的好处，让你知道获取 inject 中的内容时需要先判断一下。
 
+10. Vue 的 Jest 配置
+
+    Vue 做的配置封装成了一个 preset，也就是 `jest.config.js` 中的 `preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel'` 。
+
+    `@vue/cli-plugin-unit-jest/presets/typescript-and-babel` 这个 preest 的所在路径，具体可以在 [vue-cli 仓库](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest/presets)中找到。（虽然现在 vue-cli 已经不更新了，但不影响我们学习 webpack。）
+
+    配置文件是层层依赖的：`typescript-and-babel/jest-preset.js` 依赖 `typescript/jest-preset.js` 依赖 `default/jest-preset.js`
+
+    - `typescript-and-babel/jest-preset.js` 配置内容如下：
+
+        ```js
+        module.exports = deepmerge(
+            defaultTsPreset, // 在 typescript/jest-preset.js 的基础上添加配置
+            {
+                globals: {
+                    // 开启 ts-jest 的 babelConfig。含义是：ts 过后，还要增加 babel 的编译。
+                    'ts-jest': {
+                        babelConfig: true
+                    }
+                }
+            }
+        )
+        ```
+
+    - `typescript/jest-preset.js` 配置如下：
+
+        ```js
+        module.exports = deepmerge(
+            defaultPreset,  // 在 default/jest-preset.js 基础上添加配置
+            {
+                moduleFileExtensions: ["ts", "tsx"], // 添加了 ts 和 tsx 文件
+
+                transform: { // 配置转换规则
+                    "^.+\\.tsx?$": tsJest, // 将 tsx 后缀名文件交给 tsJest 处理。 require.resolve('ts-jest')
+                },
+            }
+        );
+        ```
+
+    - `default/jest-preset.js` 配置中的一些介绍已经移到笔记仓库中了，这里只记录一些有关该项目的
+
+        ```js
+        snapshotSerializers: [ // 通过 jest-serializer-vue 来对快照进行序列化。比如将组件的渲染结果序列化成一个字符串，后面每次测试时，都要去渲染的序列化结果保持不变。
+            'jest-serializer-vue'
+        ],
+        testMatch: [  // 当直接运行 jest 时，会根据该配置项去寻找对应的测试文件所在
+            '**/tests/unit/**/*.spec.[jt]s?(x)',
+            '**/__tests__/*.[jt]s?(x)'
+        ],
+        testURL: 'http://localhost/', // 有些测试会模拟一个服务端请求，这个就是配置对应的 URL 的
+        watchPlugins: [ // 热更新 watch 时使用的插件
+            require.resolve('jest-watch-typeahead/filename'),
+            require.resolve('jest-watch-typeahead/testname')
+        ]
+        ```
+
+11. 老师解决问题的思路
+
+    测试组件时，发现组件的挂载报错，报错内容是 props 上的某个值不存在。但实际打开网页时确实存在的。所以 vue 语法本身没有错误。那就得查看测试所使用的模块是否版本对不上。由于当时的 vue3 才正式发布两天，vue 文件中使用的又是最新的 setup 语法，而且还是 beta 阶段。查看对应的 vue-jest ，发现版本还不支持 setup 新语法。
+
+    老师解决的第一个错误类型我目前可能很难遇到，但第二个错误就很值得学习了：将导入模块的后缀名 `.vue` 去掉后，本来期待它会去找 `tsx` 文件，但结果还是出现同样的报错信息，于是怀疑模块引入的还是 vue 文件（我的话应该会先尝试删掉 vue 文件）。根据经验想到可能是 jest.config.js 的配置文件，于是修改 jest.config.js 的配置，根据 vue-cli 的配置型，然后创建出自己的新的配置项 `moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx', 'vue']`，最终成功解决问题！
+
+    从老师解决问题的方法来看，当开发的项目涉及很多依赖时，对这些依赖的模块有一个总体的认识很重要！这就是为什么要学习 webpack、babel 等工具的基本原理。不知道原理，当出现错误时很难找出答案。
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。
 
-    ？？
+    新发现，如果没有提供 props 的声明，props 中的 value 和 onChange 似乎会自动 写成下面这样时，value 和 onChange 似乎自动变成了 input 上的属性。
+
+    ```tsx
+    // import { FieldPropsDefine } from '../types'
+    import { defineComponent } from 'vue'
+
+    export default defineComponent({
+        name: 'StringField',
+        // props: FieldPropsDefine,
+        setup() {
+            return () => {
+                return <input type="text" placeholder="占位符" />
+            }
+        },
+    })
+    ```
+
+    但如果提供了 props 的声明（也就是取消注释的内容），问题就消失了！
+
+    这是为什么？？
 
 2. 循环循环组件时（类似 v-for），需要提供一个 key 来让 vue 区分不同组件的，那么直接使用 Symbol() 是否有副作用呢？
 

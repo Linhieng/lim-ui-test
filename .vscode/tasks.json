@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "jest 测试当前文件",
+            "type": "shell",
+            "windows": {
+                "command": "npx",
+                "args": ["jest", "${fileBasename}"]
+            },
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
