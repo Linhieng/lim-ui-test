@@ -16,7 +16,7 @@ describe('测试 SchemaForm', () => {
                 },
             },
         })
-        // TODO: 是否办法将 numberField 拿到外面声明，然后在 afterAll 中初始化时自动更改对应的类型，这样就能在 it 中获取类型提示？
+        // 测试代码有些重复内容没关系，优先确保易读
         const numberField = wrapper.findComponent(NumberField)
         // 📚 这里不在乎 SchemaItems 的实现，只要求最终存在 NumberField 组件
         expect(numberField.exists()).toBeTruthy()
@@ -37,6 +37,10 @@ describe('测试 SchemaForm', () => {
         // 然后触发了表单的 input 事件
         input.trigger('input')
         expect(value).toBe(456) // 因为我们的 input 表单中实现了类型的转换，所以这里应该是 number 类型
+
+        input.element.value = 'NAN'
+        input.trigger('input')
+        expect(value).toBe(0)
     })
 
     it('应该渲染出一个 StringField 组件', async () => {

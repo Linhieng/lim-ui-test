@@ -6,7 +6,7 @@
             "type": "shell",
             "windows": {
                 "command": "npx",
-                "args": ["jest", "${fileBasename}"]
+                "args": ["jest", "${fileBasename}", "--coverage"]
             },
             "group": "test",
             "presentation": {

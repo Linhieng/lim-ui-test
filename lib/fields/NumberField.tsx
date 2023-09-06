@@ -9,11 +9,8 @@ export default defineComponent({
             const target = evt.target as HTMLInputElement
             const value = target.value
             const num = Number(value)
-            if (Number.isNaN(num)) {
-                props.onChange(undefined)
-            } else {
-                props.onChange(num)
-            }
+            // 由于表单限制为 number 类型，所以 value 的值只可能是一个数字，或者一个空字符串。故无需判断 Number.isNaN(num)
+            props.onChange(num)
         }
 
         return () => {
