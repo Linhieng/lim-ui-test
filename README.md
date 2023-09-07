@@ -202,6 +202,22 @@
 
     从老师解决问题的方法来看，当开发的项目涉及很多依赖时，对这些依赖的模块有一个总体的认识很重要！这就是为什么要学习 webpack、babel 等工具的基本原理。不知道原理，当出现错误时很难找出答案。
 
+12. 打包
+
+    使用 vue-cli build 打包时，通过指定 `--target lib` 可以构成“库”，不指定时默认是构建“应用”（`--target app`）
+
+    当构建库时，vue 被认为是外置的，所以不会打包进去。构件库时需要在命令行最后提供一个入口文件，如果没有提供，默认是 `src/App.vue`。
+
+    在打包的过程中，会执行对应的配置，比如 vue.config.js 中用到的依赖也会打包进去。由于我们构建 demo 页面时，使用到了 `MonacoWebpackPlugin` 插件，但实际的库文件是中没有该插件的。我们可以通过一个环境变量来识别当前是什么环境，从而来决定是否配置该插件。
+
+    在命令行前面添加 `TYPE=demo` 可以设置一个环境变量 `TYPE`，然后在 vue.config.js 中通过 `process.TYPE` 获取到该环境变量。通过判断环境变量的值，来决定是否 `config.plugin('monaco').use(new MonacoWebpackPlugin())`。
+
+    vue-cli build 还有其他参数：
+
+    - `--no-clean` 在构建项目之前不清除目标目录的内容。安装 `rimraf` 模块实现递归删除文件夹。
+    - `--name <name>` 指定生成的文件名称，不需要包含后缀名。默认值是 package.json 中的 name
+    - `--dest <dest>` 指定输出目录 (默认值：dist)
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。

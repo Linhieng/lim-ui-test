@@ -1,1 +1,4 @@
 schema-tests
+dist
+node_modules
+coverage

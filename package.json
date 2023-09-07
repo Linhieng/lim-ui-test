@@ -3,11 +3,17 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build",
+        "serve": "TYPE=demo vue-cli-service serve",
+        "build:core": "vue-cli-service  build --target lib --no-clean --name index --dest dist lib/index.ts",
+        "build:theme": "vue-cli-service build --target lib --no-clean --name index --dest dist/theme-default lib/theme/ThemeDefault.tsx",
+        "build": "rimraf dist && npm run build:theme && npm run build:core",
         "test:unit": "vue-cli-service test:unit",
         "test:unit-conerage": "vue-cli-service test:unit --coverage",
-        "lint": "vue-cli-service lint"
+        "lint": "vue-cli-service lint",
+        "eslint:check": "eslint . ",
+        "eslint:fix": "eslint --fix . ",
+        "prettier:check": "prettier . -c",
+        "prettier:write": "prettier . -w"
     },
     "dependencies": {
         "ajv": "^6.12.6",
@@ -48,6 +54,7 @@
         "monaco-editor": "^0.41.0",
         "monaco-editor-webpack-plugin": "^7.1.0",
         "prettier": "^2.4.1",
+        "rimraf": "^5.0.1",
         "ts-jest": "^27.0.4",
         "typescript": "~4.5.5"
     },
