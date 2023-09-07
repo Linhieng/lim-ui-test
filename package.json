@@ -10,8 +10,8 @@
         "test:unit": "vue-cli-service test:unit",
         "test:unit-conerage": "vue-cli-service test:unit --coverage",
         "lint": "vue-cli-service lint",
-        "eslint:check": "eslint . ",
-        "eslint:fix": "eslint --fix . ",
+        "eslint:check": "eslint .",
+        "eslint:fix": "eslint --fix .",
         "prettier:check": "prettier . -c",
         "prettier:write": "prettier . -w"
     },
