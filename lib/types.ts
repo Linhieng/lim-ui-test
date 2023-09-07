@@ -53,6 +53,21 @@ export interface Schema {
     exclusiveMinimum?: number
 }
 
+export const SchemaFormPropsDefine = {
+    schema: {
+        type: Object as PropType<Schema>,
+        required: true,
+    },
+    value: {
+        value: null, // 设置为 null 或 undefined 相当于 any
+        required: true,
+    },
+    onChange: {
+        type: Function as PropType<(value: any) => void>,
+        required: true,
+    },
+} as const
+
 export const FieldPropsDefine = {
     schema: {
         type: Object as PropType<Schema>,

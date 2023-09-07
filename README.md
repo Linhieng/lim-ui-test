@@ -267,6 +267,20 @@
 
 对于我们库开发人员而言，纯组件的设计让我们的代码解耦了，比如我们不需要在 SchemaForm 中声明 theme，而是将它提取到了一个组件中。
 
+### 提取出 themeProvider 后打包也更方便了
+
+加入我们的库名称为 jsonschema-form, 主题系统为 jsonschema-form-theme。
+由于我们的库中抽离出来了 themeProvider 组件，那么我们在 jsonschema-form-theme 就可以很方便的直接导入 themeProvider，比如下面这样
+
+```js
+// 在 jsonschema-form-theme
+import { themeProvider } from jsonschema-form
+```
+
+由于 themeProvider 是单组件，所以打包时可以只打包 themeProvider，而不会将 SchemaForm 等内容也一起打包进去。
+
+同时，我们的库还可以提供一个 `DefaultThemeProvider` 组件，该组件直接封装了我们默认的主题，这样用户就不需要传递任何 `theme` props 了，所以也不需要导入 default-theme 这个包了，对于用户而言减少了代码量，也减少了 import。
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。
