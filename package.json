@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "TYPE=demo vue-cli-service serve",
+        "serve": "set TYPE=demo&& vue-cli-service serve",
         "build:core": "vue-cli-service  build --target lib --no-clean --name index --dest dist lib/index.ts",
         "build:theme": "vue-cli-service build --target lib --no-clean --name index --dest dist/theme-default lib/theme/ThemeDefault.tsx",
         "build": "rimraf dist && npm run build:theme && npm run build:core",

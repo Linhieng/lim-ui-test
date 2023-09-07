@@ -210,7 +210,7 @@
 
     在打包的过程中，会执行对应的配置，比如 vue.config.js 中用到的依赖也会打包进去。由于我们构建 demo 页面时，使用到了 `MonacoWebpackPlugin` 插件，但实际的库文件是中没有该插件的。我们可以通过一个环境变量来识别当前是什么环境，从而来决定是否配置该插件。
 
-    在命令行前面添加 `TYPE=demo` 可以设置一个环境变量 `TYPE`，然后在 vue.config.js 中通过 `process.TYPE` 获取到该环境变量。通过判断环境变量的值，来决定是否 `config.plugin('monaco').use(new MonacoWebpackPlugin())`。
+    在命令行前面添加 `set TYPE=demo` 可以设置一个环境变量 `TYPE`，然后在 vue.config.js 中通过 `process.env.TYPE` 获取到该环境变量。通过判断环境变量的值，来决定是否 `config.plugin('monaco').use(new MonacoWebpackPlugin())`。注意环境变量后面的空格，最好就是在获取环境变量时清除两端空格。
 
     vue-cli build 还有其他参数：
 
