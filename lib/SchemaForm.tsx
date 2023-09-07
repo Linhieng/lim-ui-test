@@ -2,7 +2,7 @@ import { PropType, defineComponent, provide } from 'vue'
 
 import SchemaItems from './SchemaItems'
 import { SCHEMA_FORM_CONTEXT_KEY } from './context'
-import { Schema, Theme } from './types'
+import { Schema } from './types'
 
 // 📚 由于 SchemaForm 的 props 只用在此处，所以暂时没有提取到 types.ts 中。
 const PropsDefine = {
@@ -16,11 +16,6 @@ const PropsDefine = {
     },
     onChange: {
         type: Function as PropType<(value: any) => void>,
-        required: true,
-    },
-    theme: {
-        type: Object as PropType<Theme>,
-        // 📚 后续的所有组件，具体渲染时都是根据 theme 中的组件进行渲染的，所以 theme 是必选的。
         required: true,
     },
 } as const
@@ -38,7 +33,6 @@ export default defineComponent({
         // 📚 SchemaItems 是不变的，不需要响应性
         provide(SCHEMA_FORM_CONTEXT_KEY, {
             SchemaItems,
-            theme: props.theme,
         })
 
         return () => {

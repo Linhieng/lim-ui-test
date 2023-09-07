@@ -244,6 +244,29 @@
 
 调用我们的库时，主题是必须传递进来的，因为叶子组件是根据主题中提供的组件进行渲染的，我们库中的 ObjectField 和 ArrayField 并不会渲染在页面上，他们只是中间的逻辑层。虽然我们会提供一个默认主题，但不是每个用户都会使用默认主题，所以我们的默认主题和库之间是分开的，也就是为什么打包时会分别打包这两个内容。
 
+主题 theme 的使用有两种方式，一种是通过 props 传递一个 theme。另一种是创建一个主题组件。前者的使用方式，会将 theme 耦合在 SchemaForm 中，而后一种的话，是纯组件化的设计。对用户而言，使用的区别如下：
+
+```tsx
+// 通过 props 传递 theme
+<SchemaForm
+    schema={demo.schema}
+    value={demo.data}
+    onChange={handleChange}
+    theme={themeDefault}
+/>
+
+// 纯组件的 theme
+<ThemeProvider theme={themeDefault}>
+    <SchemaForm
+        schema={demo.schema}
+        value={demo.data}
+        onChange={handleChange}
+    />
+</ThemeProvider>
+```
+
+对于我们库开发人员而言，纯组件的设计让我们的代码解耦了，比如我们不需要在 SchemaForm 中声明 theme，而是将它提取到了一个组件中。
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。

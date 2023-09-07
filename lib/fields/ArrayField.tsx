@@ -2,6 +2,7 @@ import { createUseStyles } from 'vue-jss'
 import { useSchemaFormContext } from '../context'
 import { FieldPropsDefine, Schema } from '../types'
 import { PropType, defineComponent } from 'vue'
+import { getWidget } from '../ThemeProvider'
 
 /*
 该组件支持下面三种类型。
@@ -118,6 +119,8 @@ export default defineComponent({
     props: FieldPropsDefine,
     setup(props) {
         const context = useSchemaFormContext()
+        // 📚 获取响应式对象时，要在 setup 内部，而不是在 render 函数中。
+        const SelectionWidgetRef = getWidget('selection')
 
         const handleArrayFieldChange = (index: number, val: any) => {
             const { value: oldValue, onChange } = props
@@ -161,7 +164,7 @@ export default defineComponent({
 
         return () => {
             const SchemaItems = context.SchemaItems
-            const SelectionWidget = context.theme.witgets.SelectionWidget
+            const SelectionWidget = SelectionWidgetRef.value
             const { schema, rootSchema, value } = props
 
             const isMultiType = Array.isArray(schema.items)
