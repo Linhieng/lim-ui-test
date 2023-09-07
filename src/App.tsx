@@ -3,6 +3,7 @@ import { createUseStyles } from 'vue-jss'
 
 import MonacoEditor from './components/MonacoEditor'
 import SchemaForm from '../lib'
+import themeDefault from '../lib/theme/theme-default'
 
 import demos from './demo'
 
@@ -188,6 +189,7 @@ export default defineComponent({
                                 schema={demo.schema}
                                 value={demo.data}
                                 onChange={handleChange}
+                                theme={themeDefault}
                             />
                         </div>
                     </main>

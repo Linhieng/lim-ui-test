@@ -2,7 +2,6 @@ import { createUseStyles } from 'vue-jss'
 import { useSchemaFormContext } from '../context'
 import { FieldPropsDefine, Schema } from '../types'
 import { PropType, defineComponent } from 'vue'
-import SelectionWidget from '../widgets/SelectionWidget'
 
 /*
 该组件支持下面三种类型。
@@ -162,6 +161,7 @@ export default defineComponent({
 
         return () => {
             const SchemaItems = context.SchemaItems
+            const SelectionWidget = context.theme.witgets.SelectionWidget
             const { schema, rootSchema, value } = props
 
             const isMultiType = Array.isArray(schema.items)

@@ -1,27 +1,9 @@
-import { PropType, defineComponent, ref, watch } from 'vue'
+import { SelectWeightPropsDefine } from '../../../types'
+import { defineComponent, ref, watch } from 'vue'
 
-// TODO: 这一块的实现逻辑有点怪怪的。
-export default defineComponent({
+const SelectionWidget = defineComponent({
     name: 'SelectionWidget',
-    props: {
-        // 📚 数据流变化方向： props.value ---> currentValue ---> onChange ---> props.value
-        value: {
-            type: String as PropType<string>,
-        },
-        onChange: {
-            type: Function as PropType<(val: any) => void>,
-            required: true,
-        },
-        options: {
-            type: Array as PropType<
-                {
-                    value: string
-                    info: any
-                }[]
-            >,
-            required: true,
-        },
-    },
+    props: SelectWeightPropsDefine,
     setup(props) {
         const currentValueRef = ref(props.value)
         watch(
@@ -55,3 +37,5 @@ export default defineComponent({
         }
     },
 })
+
+export default SelectionWidget

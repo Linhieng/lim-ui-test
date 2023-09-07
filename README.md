@@ -108,8 +108,10 @@
     ) {
         // currentInstance 指的就是当前渲染的组件，也就是当前执行的 setup 的组件
 
-        if (!currentInstance) { // 判断当前是否处于组件的渲染流程当中。setup 执行的过程就是“渲染流程”
-            if (__DEV__) { // 如果是开发者模式，则提示 provide 只能被用在 setup 中
+        if (!currentInstance) {
+            // 判断当前是否处于组件的渲染流程当中。setup 执行的过程就是“渲染流程”
+            if (__DEV__) {
+                // 如果是开发者模式，则提示 provide 只能被用在 setup 中
                 warn(`provide() can only be used inside setup().`)
             }
         } else {
@@ -122,7 +124,8 @@
             if (parentProvides === provides) {
                 // 克隆出一个新的 provides，是为了不污染父组件的 provides。
                 // 因为父组件的 provides 会传递给多个孩子，当前组件只是其中一个孩子。
-                provides = currentInstance.provides = Object.create(parentProvides)
+                provides = currentInstance.provides =
+                    Object.create(parentProvides)
             }
             // 添加新的数据
             provides[key as string] = value
@@ -155,9 +158,9 @@
                 globals: {
                     // 开启 ts-jest 的 babelConfig。含义是：ts 过后，还要增加 babel 的编译。
                     'ts-jest': {
-                        babelConfig: true
-                    }
-                }
+                        babelConfig: true,
+                    },
+                },
             }
         )
         ```
@@ -166,15 +169,16 @@
 
         ```js
         module.exports = deepmerge(
-            defaultPreset,  // 在 default/jest-preset.js 基础上添加配置
+            defaultPreset, // 在 default/jest-preset.js 基础上添加配置
             {
-                moduleFileExtensions: ["ts", "tsx"], // 添加了 ts 和 tsx 文件
+                moduleFileExtensions: ['ts', 'tsx'], // 添加了 ts 和 tsx 文件
 
-                transform: { // 配置转换规则
-                    "^.+\\.tsx?$": tsJest, // 将 tsx 后缀名文件交给 tsJest 处理。 require.resolve('ts-jest')
+                transform: {
+                    // 配置转换规则
+                    '^.+\\.tsx?$': tsJest, // 将 tsx 后缀名文件交给 tsJest 处理。 require.resolve('ts-jest')
                 },
             }
-        );
+        )
         ```
 
     - `default/jest-preset.js` 配置中的一些介绍已经移到笔记仓库中了，这里只记录一些有关该项目的
@@ -218,6 +222,28 @@
     - `--name <name>` 指定生成的文件名称，不需要包含后缀名。默认值是 package.json 中的 name
     - `--dest <dest>` 指定输出目录 (默认值：dist)
 
+13. 曾经的 vue 的 `DefineComponent` 声明组件类型
+
+    现在可以直接通过 `type CommonWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>` 这样子来声明组件类型。但在之前，需要这样子 `DefineComponent<typeof CommonWidgetPropsDefine, {}, {}>` 才可以。
+
+    但在以前是不可以的，vue 刚出现时，如果这样使用的话，会发现组件的 props 是 any 类型，原因在于它的类型非常复杂，既包含了 vue2 也包含了 vue3，所以导致只提供第一个 props 类型，后面的值为 undefined 时，会自动重载到 props 是 any 的那个类型上。解决方法就是提供多几个值，让它能够重载到我们想要的类型上。
+
+    但现在又出现了新的问题，具体见下面。
+
+## 主题系统
+
+该库的主题系统，并不是样式主题。
+
+> 样式主题：
+>
+> 国内常见的组件库的样式主题，是通过指定不同的 css 样式，然后在编译时直接打包对应的样式文件。国外，比如 react 生态圈的样式主题，是通过 js 导入的方式实现的。两者各有优劣。
+
+该库的主题系统，对允许对叶子结点的组件的自定义，该库提供的服务是：给定一个符合格式的 json Schema 对象，该库会根据该 schema 渲染出对应的“框”，比如 ObjectField 如果指定了 string，则具体的 string 的实现就是主题。比如可以将 input 元素作为 string 组件，也可以将 textarea 元素作为 string 组件，或者直接导入第三方库（element-plus）的组件作为 string 组件。对于我们这个库来说，这些具体的元素的交互逻辑、样式等内容我们不关心，我们只要求的是，你实现的 string 组件，当元素的只变化时，需要调用我提供给你的 props 中的 onChange，同时你显示的表单内容，也必须是我提供给你的 props 中的 value 内容，仅此而已！
+
+从用户的角度观察：它会调用我们的库，然后我们会默认导出一个 SchemaForm，SchemaForm 中定义了 props，这就是用户需要提供的类型，比如 schema 格式、 onChange 和 theme 是必选的。
+
+调用我们的库时，主题是必须传递进来的，因为叶子组件是根据主题中提供的组件进行渲染的，我们库中的 ObjectField 和 ArrayField 并不会渲染在页面上，他们只是中间的逻辑层。虽然我们会提供一个默认主题，但不是每个用户都会使用默认主题，所以我们的默认主题和库之间是分开的，也就是为什么打包时会分别打包这两个内容。
+
 ## 疑惑
 
 1. 在 `StringField.tsx` 中只是简单地返回了一个 `<input>`，没有使用 `props` 中的 `value` 和 `onChange`，但 `value` 和 `onChange` 的功能还是自动实现了，这是为什么？但在 vue 文件中就不会自动实现。
@@ -256,3 +282,37 @@
 3. vue 循环渲染组件时，提供的 key 是要求全局唯一呢？还是只需要在全局的对应组件中 key 唯一？（单独在某个循环中唯一这肯定是不对的，如果对的话那么直接使用下标就能解决所有问题）
 
     ？？
+
+4. 类型错误。`DefineComponent` 类型和实际的 `defineComponent` 类型不兼容？
+
+    ```tsx
+    const CommonWidgetPropsDefine = {
+        // 每个 widget 通用的 props
+        value: {
+            type: Object as PropType<any>,
+        },
+        onChange: {
+            type: Function as PropType<(v: any) => void>,
+            required: true,
+        },
+    } as const
+    export const SelectWeightPropsDefine = {
+        ...CommonWidgetPropsDefine,
+        options: {
+            type: Array as PropType<
+                {
+                    value: string
+                    info: any
+                }[]
+            >,
+            required: true,
+        },
+    } as const
+
+    type SelectWeightDefine = DefineComponent<typeof SelectWeightPropsDefine>
+
+    const a: SelectWeightDefine = defineComponent({
+        // 报错❌
+        props: SelectWeightPropsDefine,
+    })
+    ```
