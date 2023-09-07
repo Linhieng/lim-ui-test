@@ -1,11 +1,12 @@
 import { mount } from '@vue/test-utils'
 
-import JsonSchemaForm, { NumberField, StringField } from '../../lib'
+import { NumberField, StringField } from '../../lib'
+import TestComponent from './utils/TestComponent'
 
 describe('测试 ObjectField', () => {
     it('should render properties to correct fields', async () => {
         let value = {}
-        const wrapper = mount(JsonSchemaForm, {
+        const wrapper = mount(TestComponent, {
             props: {
                 schema: {
                     type: 'Object',
@@ -34,7 +35,7 @@ describe('测试 ObjectField', () => {
 
     it('should change value when sub fields trigger onChange', async () => {
         let value: { userName?: string; age?: number } = {}
-        const wrapper = mount(JsonSchemaForm, {
+        const wrapper = mount(TestComponent, {
             props: {
                 schema: {
                     type: 'Object',
@@ -79,7 +80,7 @@ describe('测试 ObjectField', () => {
     })
 
     it('properties 为 undefined 的情况', async () => {
-        const wrapper = mount(JsonSchemaForm, {
+        const wrapper = mount(TestComponent, {
             props: {
                 schema: {
                     type: 'Object',

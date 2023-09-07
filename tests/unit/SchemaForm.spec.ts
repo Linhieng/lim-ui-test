@@ -1,16 +1,17 @@
 import { mount } from '@vue/test-utils'
 
-import JsonSchemaForm, { NumberField, StringField } from '../../lib'
+import { NumberField, StringField } from '../../lib'
+import TestComponent from './utils/TestComponent'
 
 describe('测试 SchemaForm', () => {
     it('应该渲染出一个 NumberField 组件', async () => {
-        let value = 'hello'
-        const wrapper = mount(JsonSchemaForm, {
+        let value
+        const wrapper = mount(TestComponent, {
             props: {
                 schema: {
                     type: 'number',
                 },
-                value,
+                value: undefined,
                 onChange: (v) => {
                     value = v
                 },
@@ -44,13 +45,13 @@ describe('测试 SchemaForm', () => {
     })
 
     it('应该渲染出一个 StringField 组件', async () => {
-        let value = 'hello'
-        const wrapper = mount(JsonSchemaForm, {
+        let value
+        const wrapper = mount(TestComponent, {
             props: {
                 schema: {
                     type: 'string',
                 },
-                value,
+                value: undefined,
                 onChange: (v) => {
                     value = v
                 },
@@ -64,7 +65,7 @@ describe('测试 SchemaForm', () => {
 
         const input = stringField.find('input')
         expect(input.exists()).toBeTruthy()
-        expect(input.attributes('type')).toBe('string')
+        expect(input.attributes('type')).toBe('text')
 
         input.element.value = '456'
         expect(value).toBe(123)
