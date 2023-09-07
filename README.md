@@ -230,6 +230,74 @@
 
     但现在又出现了新的问题，具体见下面。
 
+14. props 的 onChange 重名时会是一个数组
+
+    考虑下面这种场景，StringField 是 TextWidget 的父组件的，传递的 props 有 value（表单值）和 onChange（更改 value）值。
+    当有时 StringField 会想要处理子组件的 onChange，于是会在后面再添加一个 onChange，此时传递给 TextWidget 的就有两个 onChange 了。
+
+    ```tsx
+    const { schema, rootSchema, ...rest } = props
+    return <TextWidget {...rest} onChange={handleChange} />
+    ```
+
+    一般情况下，我们会认为后一个 onChange 会覆盖前一个，但 vue 不是这样的，或者应该说 `@vue/babel-plugin-jsx` 不是这样的，他们会将两个 onChange 变成一个函数数组，这就会导致子组件 TextWidget 调用 onChange 时，提示 onChange 不是一个函数。
+
+    解决方法就是在 `babel.config.js` 中配置 mergeProps: false
+
+    ```js
+    module.exports = {
+        presets: ['@vue/cli-plugin-babel/preset'],
+        plugins: [['@vue/babel-plugin-jsx', { mergeProps: false }]],
+    }
+    ```
+
+15. Vue 中的双向数据问题
+
+    场景：StringField 是 TextWidget 的父组件的，TextWidget 负责页面上的 input 元素。并且 input 元素上的值是 props 中传递下来的 value 值。
+
+    当 input 文本变更时，TextWidget 会调用父组件的 onChange 来更改 value 值。但是 StringField 接管了子组件的 onChange，不让它的更改生效。
+
+    在 react 中，input 表单的值和 props 中的 value 值是绑定的，所以当 onChange 不生效时，input 框中的值也不会生效。但是在 vue 中则不是这样——input 表单值并不会和 props 的 value 值绑定。
+
+    解决这个问题有两种方式，一种是通过 `nextTick` 函数。vue 是不断地循环一轮 tick 的，nextTick 就是下一轮循环，比如当在 TextWidget 中更改响应值 props.value 时，修改不是同步的，所以我们无法在下一行代码就判断 props.value 的值是否生效（也就是 onChange 是否生效）：
+
+    ```tsx
+    const handleInput = (evt: Event) => {
+        const target = evt.target as HTMLInputElement
+        const value = target.value // 此处 value=1, props.value=0
+        props.onChange(value)
+        console.log(props.value) // 此时的 props.value 依旧是 0
+    }
+    ```
+
+    这个时候我们就可以借助 `nextTick`，他可以让我们在下一轮 tick 开始的时候立马执行某些事情，比如下面代码
+
+    ```tsx
+    const handleInput = (evt: Event) => {
+        const target = evt.target as HTMLInputElement
+        const value = target.value // 此处 value=1, props.value=0
+        props.onChange(value)
+        nextTick(() => {
+            if (props.value !== value) { // 如果不相等，说明我们的 onChange 可能被阻断了
+                target.value = props.value  // 这个时候需要恢复我们表单的值
+            }
+        })
+    }
+    ```
+
+    虽然第一种方式能够解决问题，但如果用户的电脑性能差，则会先看到输入的值成功输入，但下一刻就消失了。原因是每轮 tick 是需要消耗一定的时间的，在本轮 tick 未结束之前，input 中的值依旧是用户输入的值。
+
+    第二种方法是，input 标签不负责数值的更改，input 标签的值始终和 props.value 的值相同，代码如下：
+
+    ```tsx
+    const handleInput = (evt: Event) => {
+        const target = evt.target as HTMLInputElement
+        const value = target.value
+        target.value = props.value // 不负责更改
+        props.onChange(value)
+    }
+    ```
+
 ## 主题系统
 
 该库的主题系统，并不是样式主题。
