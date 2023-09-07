@@ -98,12 +98,28 @@ export const SelectWeightPropsDefine = {
     },
 } as const
 
-export type SelectWeightDefine = DefineComponent<typeof SelectWeightPropsDefine> // TODO: 为什么这样定义的类型会和 SelectionWidget 组件中导出的类型不相同，使用的明明都是同一个 props
+export const NumberWidgetPropsDefine = { ...CommonWidgetPropsDefine } as const
+export const TextWidgetPropsDefine = { ...CommonWidgetPropsDefine } as const
+
+// TODO: 为什么这样定义的类型会和 SelectionWidget 组件中导出的类型不相同，使用的明明都是同一个 props
+export type SelectWeightDefine = DefineComponent<typeof SelectWeightPropsDefine>
+export type NumberWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>
+export type TextWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>
+
+export enum SelectionWidgetName {
+    SelectionWidget = 'SelectionWidget',
+}
+export enum CommonWidgetName {
+    TextWidgetName = 'TextWidget',
+    NumberWidgetName = 'NumberWidget',
+}
 
 // 声明主题的接口。也就是定义主题时，它导出的 theme 应该符合该接口的定义
 export interface Theme {
     witgets: {
         // witgets 表示小部件/叶子组件，这些就是用户可自定义的主题。我们只负责声明接口，不负责具体组件的实现。当然，我们会提供默认主题。
-        SelectionWidget: SelectWeightDefine
+        [SelectionWidgetName.SelectionWidget]: SelectWeightDefine
+        [CommonWidgetName.NumberWidgetName]: NumberWidgetDefine
+        [CommonWidgetName.TextWidgetName]: TextWidgetDefine
     }
 }

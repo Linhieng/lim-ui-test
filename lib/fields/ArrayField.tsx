@@ -1,6 +1,6 @@
 import { createUseStyles } from 'vue-jss'
 import { useSchemaFormContext } from '../context'
-import { FieldPropsDefine, Schema } from '../types'
+import { FieldPropsDefine, Schema, SelectionWidgetName } from '../types'
 import { PropType, defineComponent } from 'vue'
 import { getWidget } from '../ThemeProvider'
 
@@ -120,7 +120,9 @@ export default defineComponent({
     setup(props) {
         const context = useSchemaFormContext()
         // 📚 获取响应式对象时，要在 setup 内部，而不是在 render 函数中。
-        const SelectionWidgetRef = getWidget('selection')
+        const SelectionWidgetRef = getWidget(
+            SelectionWidgetName.SelectionWidget
+        )
 
         const handleArrayFieldChange = (index: number, val: any) => {
             const { value: oldValue, onChange } = props

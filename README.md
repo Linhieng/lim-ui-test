@@ -332,6 +332,9 @@
         },
     } as const
 
+    // 下面这两句是核心，问题在于两者的 proprs 都相同，但类型却不相同，当然，解决方式是有的，但这个问题似乎一直存在。按照老师当时的说法是，vue3 没有舍弃以前的类似。
+    // 对于我们来说，类型的定义只需要 props 就可以了，但是 vue 却要求很多其他内容，比如 data, watch 之类的。
+    // 当然，上面这个解释只是老师当时遇到的问题，现在已经过去两年了，按理来说问题应该已经解决了，所以我这个可能是其他原因导致的也说不定。
     type SelectWeightDefine = DefineComponent<typeof SelectWeightPropsDefine>
 
     const a: SelectWeightDefine = defineComponent({
