@@ -424,3 +424,10 @@ import { themeProvider } from jsonschema-form
         props: SelectWeightPropsDefine,
     })
     ```
+
+    经过我的不懈努力——慢慢展开对象查看，然后发现这样并没有什么用，因为报错的信息太太太长了。但是通过编辑器的高亮功能，我最终还是明白了大概是什么情况。
+    这大概率还是 vue 的锅，报错信息其实就是在说 `defineComponent()` 返回的对象类型的 `$props` 属性上面没有 `onChange`，但是在 `DefineComponent` 的 `$props` 上面却要求有 `onChange`。
+
+    报错信息就是这样，但实际上可能还有更深层次的原因，因为如果把 `onChange` 改为 `onaChange`，报错就消失了！但如果改成 `on1Change` 或者 `onChangeabc` 就没有效果！这就很神奇了。
+
+    具体的分析后面有时间再弄，现在就先进行强制类型声明吧。

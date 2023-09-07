@@ -1,7 +1,7 @@
-import { SelectWeightPropsDefine } from '../../../types'
+import { SelectWeightDefine, SelectWeightPropsDefine } from '../../../types'
 import { defineComponent, ref, watch } from 'vue'
 
-const SelectionWidget = defineComponent({
+const SelectionWidget /* : SelectWeightDefine */ = defineComponent({
     name: 'SelectionWidget',
     props: SelectWeightPropsDefine,
     setup(props) {
@@ -36,6 +36,6 @@ const SelectionWidget = defineComponent({
             )
         }
     },
-})
+}) as SelectWeightDefine
 
 export default SelectionWidget

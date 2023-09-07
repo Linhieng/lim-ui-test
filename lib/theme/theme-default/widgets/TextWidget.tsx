@@ -1,7 +1,7 @@
-import { TextWidgetPropsDefine } from '../../../types'
+import { TextWidgetDefine, TextWidgetPropsDefine } from '../../../types'
 import { defineComponent } from 'vue'
 
-export default defineComponent({
+const TextWidget /* : TextWidgetDefine */ = defineComponent({
     name: 'TextWidget',
     props: TextWidgetPropsDefine,
     setup(props) {
@@ -17,4 +17,6 @@ export default defineComponent({
             )
         }
     },
-})
+}) as TextWidgetDefine
+
+export default TextWidget

@@ -1,7 +1,7 @@
-import { NumberWidgetPropsDefine } from '../../../types'
+import { NumberWidgetDefine, NumberWidgetPropsDefine } from '../../../types'
 import { defineComponent } from 'vue'
 
-export default defineComponent({
+const NumberWidget /* : NumberWidgetDefine */ = defineComponent({
     name: 'NumberWidget',
     props: NumberWidgetPropsDefine,
     setup(props) {
@@ -23,4 +23,6 @@ export default defineComponent({
             )
         }
     },
-})
+}) as NumberWidgetDefine
+
+export default NumberWidget
