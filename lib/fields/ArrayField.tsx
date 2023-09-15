@@ -219,6 +219,7 @@ export default defineComponent({
                     <SelectionWidget
                         options={options}
                         onChange={props.onChange}
+                        value={value}
                     />
                 )
             }

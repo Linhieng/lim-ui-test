@@ -5,7 +5,7 @@ const SelectionWidget /* : SelectWeightDefine */ = defineComponent({
     name: 'SelectionWidget',
     props: SelectWeightPropsDefine,
     setup(props) {
-        const currentValueRef = ref(props.value)
+        const currentValueRef = ref(props.value || [])
         watch(
             () => props.value,
             (newValue: any) => {

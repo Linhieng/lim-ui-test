@@ -106,7 +106,8 @@ export const FieldPropsDefine = {
 const CommonWidgetPropsDefine = {
     // 每个 widget 通用的 props
     value: {
-        type: Object as PropType<any>,
+        type: null, // any
+        required: true,
     },
     onChange: {
         type: Function as PropType<(v: any) => void>,
