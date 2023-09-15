@@ -1,4 +1,5 @@
 import { DefineComponent, PropType, Ref } from 'vue'
+import { ValidateResult } from './validateFormData'
 import Ajv from 'ajv'
 
 export enum SchemaTypesEnum {
@@ -55,10 +56,7 @@ export interface Schema {
 }
 
 export interface contextRef {
-    doValidate: () => {
-        errors: Ajv.ErrorObject[]
-        valid: boolean
-    }
+    doValidate: () => ValidateResult
 }
 
 export const SchemaFormPropsDefine = {
@@ -78,7 +76,7 @@ export const SchemaFormPropsDefine = {
         type: Object as PropType<Ref<contextRef | undefined>>,
     },
     ajvOptions: {
-        type: Object as PropType<Schema>,
+        type: Object as PropType<Ajv.Options>,
     },
 } as const
 

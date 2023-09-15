@@ -58,6 +58,25 @@ import jsonpointer from 'jsonpointer'
 import union from 'lodash.union'
 import mergeAllOf from 'json-schema-merge-allof'
 
+export function setOwnProperty(obj: object, property: string, value: any) {
+    Reflect.set(obj, property, value)
+}
+
+export function hasOwnProperty(obj: object, property: string) {
+    try {
+        /*
+            TS2339: Property 'hasOwn' does not exist on type 'ObjectConstructor'.
+            即使在 tsconfig.json 中设置 "lib": ["esnext", "dom"] 也无效
+        */
+        return (Object as any).hasOwn(obj, property)
+    } catch (error) {
+        // 直接调用 obj.hasOwnProperty 有可能会因为 obj 覆盖了 prototype 上的 hasOwnProperty 而产生错误
+        return Object.prototype.hasOwnProperty.call(obj, property)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 export function isObject(thing: any) {
     return typeof thing === 'object' && thing !== null && !Array.isArray(thing)
 }
@@ -66,13 +85,13 @@ export function isEmptyObject(thing: any) {
     return isObject(thing) && Object.keys(thing).length === 0
 }
 
-export function hasOwnProperty(obj: any, key: string) {
-    /**
-     * 直接调用`obj.hasOwnProperty`有可能会因为
-     * obj 覆盖了 prototype 上的 hasOwnProperty 而产生错误
-     */
-    return Object.prototype.hasOwnProperty.call(obj, key)
-}
+// export function hasOwnProperty(obj: any, key: string) {
+//     /**
+//      * 直接调用`obj.hasOwnProperty`有可能会因为
+//      * obj 覆盖了 prototype 上的 hasOwnProperty 而产生错误
+//      */
+//     return Object.prototype.hasOwnProperty.call(obj, key)
+// }
 
 // import { isObject, hasOwnProperty, getSchemaType, guessType } from './utils'
 // import { validateData } from './validator'

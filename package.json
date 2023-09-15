@@ -24,6 +24,7 @@
         "jsonpointer": "4.1",
         "jss": "10.4",
         "jss-preset-default": "10.4",
+        "lodash.topath": "^4.5.2",
         "lodash.union": "^4.6.0",
         "vue": "^3.2.13",
         "vue-jss": "^0.0.4"
@@ -31,6 +32,7 @@
     "devDependencies": {
         "@types/jest": "^27.0.1",
         "@types/json-schema-merge-allof": "^0.6.0",
+        "@types/lodash.topath": "^4.5.7",
         "@types/lodash.union": "^4.6.6",
         "@typescript-eslint/eslint-plugin": "^5.4.0",
         "@typescript-eslint/parser": "^5.4.0",
