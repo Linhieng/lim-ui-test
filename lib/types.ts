@@ -1,4 +1,5 @@
-import { DefineComponent, PropType } from 'vue'
+import { DefineComponent, PropType, Ref } from 'vue'
+import Ajv from 'ajv'
 
 export enum SchemaTypesEnum {
     'NUMBER' = 'number',
@@ -53,6 +54,13 @@ export interface Schema {
     exclusiveMinimum?: number
 }
 
+export interface contextRef {
+    doValidate: () => {
+        errors: Ajv.ErrorObject[]
+        valid: boolean
+    }
+}
+
 export const SchemaFormPropsDefine = {
     schema: {
         type: Object as PropType<Schema>,
@@ -65,6 +73,12 @@ export const SchemaFormPropsDefine = {
     onChange: {
         type: Function as PropType<(value: any) => void>,
         required: true,
+    },
+    contextRef: {
+        type: Object as PropType<Ref<contextRef | undefined>>,
+    },
+    ajvOptions: {
+        type: Object as PropType<Schema>,
     },
 } as const
 

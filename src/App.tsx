@@ -1,8 +1,8 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { Ref, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { createUseStyles } from 'vue-jss'
 
 import MonacoEditor from './components/MonacoEditor'
-import SchemaForm from '../lib'
+import SchemaForm, { contextRef } from '../lib'
 import DefaultThemeProvider from '../lib/DefaultThemeProvider'
 
 import demos from './demo'
@@ -80,6 +80,7 @@ const useStyles = createUseStyles({
 export default defineComponent({
     setup() {
         const exampleIndexRef = ref<number>(0)
+        const contextRef = ref() as Ref<contextRef>
         const classRef = useStyles()
 
         const demo = reactive<DemoType>({
@@ -173,6 +174,10 @@ export default defineComponent({
             )
         }
 
+        function validateForm() {
+            console.log(contextRef.value.doValidate())
+        }
+
         return () => {
             const classes = classRef.value
 
@@ -190,8 +195,10 @@ export default defineComponent({
                                     schema={demo.schema}
                                     value={demo.data}
                                     onChange={handleChange}
+                                    contextRef={contextRef}
                                 />
                             </DefaultThemeProvider>
+                            <button onClick={validateForm}>校验</button>
                         </div>
                     </main>
                 </div>
