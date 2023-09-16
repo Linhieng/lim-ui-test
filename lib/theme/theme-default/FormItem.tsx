@@ -13,8 +13,7 @@ const useStyles = createUseStyles({
         color: 'red',
     },
 })
-
-export default defineComponent({
+const FormItem = defineComponent({
     name: 'FormItem',
     props: CommonWidgetPropsDefine,
     setup(props, { slots }) {
@@ -37,3 +36,22 @@ export default defineComponent({
         }
     },
 })
+
+export default FormItem
+
+// TODO: 类型定义
+export function WithFormItem(WidgetComp: any) {
+    return defineComponent({
+        name: WidgetComp.name,
+        props: WidgetComp.props,
+        setup(props) {
+            return () => {
+                return (
+                    <FormItem {...(props as any)}>
+                        <WidgetComp {...(props as any)} />
+                    </FormItem>
+                )
+            }
+        },
+    })
+}

@@ -304,6 +304,12 @@
 
     对于表单的校验，我们采用用户主动触发的方式，也就是在 SchemaForm 中向外暴露一个校验函数，用户调用该函数，则会执行校验功能。这可以通过 `defineExpose()` 来实现。但 `defineExpose()` 只支持在单文件组件 `<script setup>` 中使用，tsx 中不支持。所以目前使用的方法是：父组件通过 props 传递一个 contextRef 容器给子组件，子组件将要传递给父组件的内容放在 contextRef.value 中，这样父组件就可以收到子组件的内容了。
 
+17. 高阶组件
+
+    将 widget 作为 FormItem 组件的插槽来使用，可以很方便的将 label、报错信息等内容抽离到 FormItem 组件中。
+    但是由于是直接在 widget 中导入 FormItem 组件，如果 FormItem 组件发生变化，则需要修改每一个 widget 组件。
+    为此，我们可以将 FormItem 组件再次抽离成高阶组件（HOC: higher order component）。
+
 ## 主题系统
 
 该库的主题系统，并不是样式主题。
