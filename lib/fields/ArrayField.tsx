@@ -167,7 +167,7 @@ export default defineComponent({
         return () => {
             const SchemaItems = context.SchemaItems
             const SelectionWidget = SelectionWidgetRef.value
-            const { schema, rootSchema, value } = props
+            const { schema, rootSchema, value, errorSchema } = props
 
             const isMultiType = Array.isArray(schema.items)
             const isSingleType = schema.items && !(schema.items as any).enum
@@ -183,6 +183,7 @@ export default defineComponent({
                         value={valArr[i]}
                         onChange={(v: any) => handleArrayFieldChange(i, v)}
                         key={i}
+                        errorSchema={errorSchema[i] || {}}
                     />
                 ))
             } else if (isSingleType) {
@@ -205,6 +206,7 @@ export default defineComponent({
                                 onChange={(v: any) =>
                                     handleArrayFieldChange(i, v)
                                 }
+                                errorSchema={errorSchema[i] || {}}
                             />
                         </ArrayItemWrapper>
                     )
@@ -220,6 +222,8 @@ export default defineComponent({
                         options={options}
                         onChange={props.onChange}
                         value={value}
+                        // TODO: 如果是这种类似，似乎只会有一个？errorSchema[0]
+                        errors={errorSchema[0]?.__errors || []}
                     />
                 )
             }

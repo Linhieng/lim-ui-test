@@ -3,22 +3,21 @@ export default {
     schema: {
         type: 'object',
         properties: {
-            level1: {
-                type: 'object',
-                properties: {
-                    level2: {
-                        type: 'string',
-                    },
+            age: { type: 'number' },
+            name: { type: 'string' },
+            hobby: {
+                type: 'array',
+                items: {
+                    type: 'string',
+                    enum: ['red', 'green', 'blue'],
                 },
             },
-            level1a: { type: 'String' },
         },
     },
     uiSchema: {},
     default: {
-        level1a: 123,
-        level1: {
-            level2: 123,
-        },
+        age: '123',
+        name: 123,
+        hobby: [[123]],
     },
 }

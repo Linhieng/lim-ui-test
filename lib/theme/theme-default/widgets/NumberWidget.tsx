@@ -15,11 +15,18 @@ const NumberWidget /* : NumberWidgetDefine */ = defineComponent({
         }
         return () => {
             return (
-                <input
-                    type="number"
-                    value={props.value}
-                    onInput={handleInput}
-                />
+                <div>
+                    <input
+                        type="number"
+                        value={props.value}
+                        onInput={handleInput}
+                    />
+                    <ul>
+                        {props.errors.map((error) => (
+                            <li>{error}</li>
+                        ))}
+                    </ul>
+                </div>
             )
         }
     },

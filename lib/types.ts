@@ -1,5 +1,5 @@
 import { DefineComponent, PropType, Ref } from 'vue'
-import { ValidateResult } from './validateFormData'
+import { ErrorSchema, ValidateResult } from './validateFormData'
 import Ajv from 'ajv'
 
 export enum SchemaTypesEnum {
@@ -97,6 +97,10 @@ export const FieldPropsDefine = {
         type: Function as PropType<(value: any) => void>,
         required: true,
     },
+    errorSchema: {
+        type: Object as PropType<ErrorSchema>,
+        required: true,
+    },
 } as const
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +113,10 @@ const CommonWidgetPropsDefine = {
     },
     onChange: {
         type: Function as PropType<(v: any) => void>,
+        required: true,
+    },
+    errors: {
+        type: Array as PropType<string[]>,
         required: true,
     },
 } as const

@@ -13,7 +13,18 @@ const TextWidget /* : TextWidgetDefine */ = defineComponent({
         }
         return () => {
             return (
-                <input type="text" value={props.value} onInput={handleInput} />
+                <div>
+                    <input
+                        type="text"
+                        value={props.value}
+                        onInput={handleInput}
+                    />
+                    <ul>
+                        {props.errors.map((error) => (
+                            <li>{error}</li>
+                        ))}
+                    </ul>
+                </div>
             )
         }
     },

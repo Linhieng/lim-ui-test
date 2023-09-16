@@ -11,7 +11,7 @@ import SchemaItems from './SchemaItems'
 import { SCHEMA_FORM_CONTEXT_KEY } from './context'
 import { SchemaFormPropsDefine } from './types'
 import Ajv from 'ajv'
-import validateFormData from './validateFormData'
+import validateFormData, { ErrorSchema } from './validateFormData'
 
 const defaultAjvOptions = {
     allErrors: true,
@@ -32,6 +32,8 @@ export default defineComponent({
             SchemaItems,
         })
 
+        const errorSchemaRef = shallowRef<ErrorSchema>({})
+
         const validatorRef = shallowRef() as Ref<Ajv.Ajv>
 
         watchEffect(() => {
@@ -49,12 +51,17 @@ export default defineComponent({
                 }
                 // eslint-disable-next-line vue/no-mutating-props
                 props.contextRef.value = {
-                    doValidate: () =>
-                        validateFormData(
+                    doValidate: () => {
+                        // TODO: schema 校验出错时，result.validationError 将会有内容，对应的 result.errorSchema 也是 schema 的路径
+                        //          此时将 errorSchema 传递给子组件没有意义，因为它们处理不了（路径不匹配）。
+                        const result = validateFormData(
                             validatorRef.value,
                             props.value,
                             props.schema
-                        ),
+                        )
+                        errorSchemaRef.value = result.errorSchema
+                        return result
+                    },
                 }
             },
             {
@@ -71,6 +78,7 @@ export default defineComponent({
                     rootSchema={schema}
                     value={value}
                     onChange={handleChange}
+                    errorSchema={errorSchemaRef.value}
                 />
             )
         }

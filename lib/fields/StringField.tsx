@@ -22,8 +22,14 @@ export default defineComponent({
                 <TextWidget {...rest} />
             传递 props，但似乎这种方式得不到类型校验，因为当 rest 都缺少所需要的 props 时，依旧不会提示任何内容
             */
-            const { value } = props
-            return <TextWidget value={value} onChange={handleChange} />
+            const { value, errorSchema } = props
+            return (
+                <TextWidget
+                    value={value}
+                    onChange={handleChange}
+                    errors={errorSchema.__errors || []}
+                />
+            )
         }
     },
 })

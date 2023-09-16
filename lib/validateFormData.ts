@@ -7,7 +7,7 @@ import { Schema } from './types'
 import toPath from 'lodash.topath'
 import { hasOwnProperty, setOwnProperty } from './utils'
 
-type ErrorSchema = {
+export type ErrorSchema = {
     [level: string]: ErrorSchema
 } & {
     __errors?: string[]
@@ -35,7 +35,30 @@ function toErrorSchema(errors: Ajv.ErrorObject[]): ErrorSchema {
         if (!message) {
             return
         }
-
+        /*
+            有关 dataPath 需要说明一下。
+            如果是表单值校验出错，则 dataPath 路径是表单值结构的路径。
+            如果是 schema 校验出错，则 dataPath 路径是 schema 结构的路径。
+            比如下面 schema 结构：
+                {
+                    "type": "object",
+                    "properties": {
+                        "level1": {
+                            "type": "String"
+                        }
+                    }
+                }
+                由于 schema 的 type 写成了 String
+                所以 schema 校验出错，dataPath 路径会是 ".properties['level1a'].type"
+                提示类型应该是 "array"、"boolean" 、"integer" 、"null" 、"number" 、"object" 、"string" 之一
+            当修改 String 为 string 后
+            如果对应的表单值是：
+                {
+                    "level1a": 123,
+                }
+                此时就会提示表单值校验出错
+                对应的 dataPath 会是 ".level1a" 这才是我们在组件中会传递下去的值。
+        */
         const path = toPath(dataPath)
         if (path.length > 0 && path[0] === '') {
             path.shift()

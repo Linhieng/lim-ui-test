@@ -29,7 +29,7 @@ export default defineComponent({
             // 📚 如果前面没有处理 context 为 undefined 的情况，那么这里的解构赋值就会报错
             const { SchemaItems } = context
 
-            const { schema, rootSchema, value } = props
+            const { schema, rootSchema, value, errorSchema } = props
 
             const currentValue: Record<string, any> = isObject(value)
                 ? (value as any)
@@ -45,6 +45,7 @@ export default defineComponent({
                     onChange={(v: any) => {
                         handleObjectFieldChange(k, v)
                     }}
+                    errorSchema={errorSchema[k] || {}}
                 />
             ))
         }
