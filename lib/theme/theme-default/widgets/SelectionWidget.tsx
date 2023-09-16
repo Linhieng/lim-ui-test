@@ -1,5 +1,6 @@
 import { SelectWeightDefine, SelectWeightPropsDefine } from '../../../types'
 import { defineComponent, ref, watch } from 'vue'
+import FormItem from '../FormItem'
 
 const SelectionWidget /* : SelectWeightDefine */ = defineComponent({
     name: 'SelectionWidget',
@@ -28,18 +29,13 @@ const SelectionWidget /* : SelectWeightDefine */ = defineComponent({
             //                  v-model={currentValue}
             // 因为 v-model 会直接绑定传入的值，而我们的 currentValue 设置为 const 表示不允许修改。
             return (
-                <div>
+                <FormItem {...props}>
                     <select multiple={true} v-model={currentValueRef.value}>
                         {options.map((option) => (
                             <option value={option.value}>{option.info}</option>
                         ))}
                     </select>
-                    <ul>
-                        {props.errors.map((error) => (
-                            <li>{error}</li>
-                        ))}
-                    </ul>
-                </div>
+                </FormItem>
             )
         }
     },

@@ -1,5 +1,6 @@
 import { NumberWidgetDefine, NumberWidgetPropsDefine } from '../../../types'
 import { defineComponent } from 'vue'
+import FormItem from '../FormItem'
 
 const NumberWidget /* : NumberWidgetDefine */ = defineComponent({
     name: 'NumberWidget',
@@ -15,18 +16,13 @@ const NumberWidget /* : NumberWidgetDefine */ = defineComponent({
         }
         return () => {
             return (
-                <div>
+                <FormItem {...props}>
                     <input
                         type="number"
                         value={props.value}
                         onInput={handleInput}
                     />
-                    <ul>
-                        {props.errors.map((error) => (
-                            <li>{error}</li>
-                        ))}
-                    </ul>
-                </div>
+                </FormItem>
             )
         }
     },

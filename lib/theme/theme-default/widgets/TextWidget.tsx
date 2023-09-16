@@ -1,5 +1,6 @@
 import { TextWidgetDefine, TextWidgetPropsDefine } from '../../../types'
 import { defineComponent } from 'vue'
+import FormItem from '../FormItem'
 
 const TextWidget /* : TextWidgetDefine */ = defineComponent({
     name: 'TextWidget',
@@ -13,18 +14,13 @@ const TextWidget /* : TextWidgetDefine */ = defineComponent({
         }
         return () => {
             return (
-                <div>
+                <FormItem {...props}>
                     <input
                         type="text"
                         value={props.value}
                         onInput={handleInput}
                     />
-                    <ul>
-                        {props.errors.map((error) => (
-                            <li>{error}</li>
-                        ))}
-                    </ul>
-                </div>
+                </FormItem>
             )
         }
     },

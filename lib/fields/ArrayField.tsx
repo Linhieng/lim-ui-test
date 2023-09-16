@@ -224,6 +224,7 @@ export default defineComponent({
                         value={value}
                         // TODO: 如果是这种类似，似乎只会有一个？errorSchema[0]
                         errors={errorSchema[0]?.__errors || []}
+                        schema={schema}
                     />
                 )
             }

@@ -105,7 +105,7 @@ export const FieldPropsDefine = {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-const CommonWidgetPropsDefine = {
+export const CommonWidgetPropsDefine = {
     // 每个 widget 通用的 props
     value: {
         type: null, // any
@@ -117,6 +117,10 @@ const CommonWidgetPropsDefine = {
     },
     errors: {
         type: Array as PropType<string[]>,
+        required: true,
+    },
+    schema: {
+        type: Object as PropType<Schema>,
         required: true,
     },
 } as const

@@ -5,8 +5,8 @@ export default {
         items: {
             type: 'object',
             properties: {
-                name: { type: 'string' },
-                age: { type: 'number' },
+                name: { title: '姓名', type: 'string' },
+                age: { title: '年龄', type: 'number' },
             },
         },
     },
