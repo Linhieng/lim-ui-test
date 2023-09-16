@@ -78,6 +78,9 @@ export const SchemaFormPropsDefine = {
     ajvOptions: {
         type: Object as PropType<Ajv.Options>,
     },
+    customValidate: {
+        type: Function as PropType<(data: any, errors: any) => void>,
+    },
 } as const
 
 export const FieldPropsDefine = {

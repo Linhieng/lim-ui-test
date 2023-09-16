@@ -57,7 +57,9 @@ export default defineComponent({
                         const result = validateFormData(
                             validatorRef.value,
                             props.value,
-                            props.schema
+                            props.schema,
+                            'zh',
+                            props.customValidate
                         )
                         errorSchemaRef.value = result.errorSchema
                         return result

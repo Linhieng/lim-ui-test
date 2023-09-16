@@ -17,6 +17,7 @@ type DemoType = {
     schemaCode: string
     uiSchemaCode: string
     dataCode: string
+    customValidate?: (formData: any, errorsTip: any) => void
 }
 
 function toJson(data: unknown) {
@@ -90,6 +91,7 @@ export default defineComponent({
             dataCode: '',
             schemaCode: '',
             uiSchemaCode: '',
+            customValidate: undefined,
         })
 
         function factoryHandleCodeChange(
@@ -125,6 +127,7 @@ export default defineComponent({
             demo.schemaCode = toJson(example.schema)
             demo.uiSchemaCode = toJson(example.uiSchema)
             demo.dataCode = toJson(example.default)
+            demo.customValidate = (example as any).customValidate
         })
 
         function renderExampleBtn() {
@@ -196,6 +199,7 @@ export default defineComponent({
                                     value={demo.data}
                                     onChange={handleChange}
                                     contextRef={contextRef}
+                                    customValidate={demo.customValidate}
                                 />
                             </DefaultThemeProvider>
                             <button onClick={validateForm}>校验</button>
