@@ -21,7 +21,7 @@
         "ajv-i18n": "^3.5.0",
         "core-js": "^3.8.3",
         "json-schema-merge-allof": "^0.7.0",
-        "jsonpointer": "4.1",
+        "jsonpointer": "5.0",
         "jss": "10.4",
         "jss-preset-default": "10.4",
         "lodash.topath": "^4.5.2",
